@@ -1,4 +1,15 @@
 <div class="wrapper">
-    <div class="editor" ace-editor [(text)]="text" [mode]="'html'"></div>
-    <div class="editor" ace-editor [(text)]="text" [mode]="'html'"></div>
+    <div class="editor" ace-editor [(text)]="text" [mode]="'html'" [options]="options">
+    </div>
+    <div class="editor" ace-editor [(text)]="text" [mode]="'html'" [options]="options"></div>
+    <div id="preset">
+        <select>
+            <option value="" disabled selected>PRESET</option>
+            <option value="1">Select by id</option>
+            <option value="2">Select x</option>
+            <option value="3">Select y</option>
+            <option value="4">Select all from</option>
+        </select>
+    </div>
+    <button type="button">SEND <span class="fa fa-paper-plane"></span></button>
 </div>

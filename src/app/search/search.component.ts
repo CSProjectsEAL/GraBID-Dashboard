@@ -8,8 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SearchComponent implements OnInit {
   text: string = 'afsdsa';
-  
-  constructor() { }
+  options:any = {maxLines: 500, printMargin: false};
+
+  constructor() {
+   }
 
   ngOnInit() {
   }
