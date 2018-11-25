@@ -1,0 +1,27 @@
+.wrapper{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 15px;
+}
+
+.dashboard-element{
+    background: #353c48;
+    border: solid 1px #707070;
+    padding: 5px;
+    min-height: 250px;
+}
+
+.small{
+    grid-column-start: auto;
+    grid-column-end: span 1;
+}
+
+.medium{
+    grid-column-start: auto;
+    grid-column-end: span 2;
+}
+
+.large{
+    grid-column-start: auto;
+    grid-column-end: span 3;
+}
