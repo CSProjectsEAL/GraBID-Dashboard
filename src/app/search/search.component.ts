@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ElasticSearchService } from '../elastic-search.service';
 
 @Component({
   selector: 'app-search',
@@ -20,8 +21,11 @@ export class SearchComponent implements OnInit {
 
   options:any = {printMargin: false};
 
-  constructor() {}
+  constructor(private elasticService: ElasticSearchService) {
+   }
 
   ngOnInit() {
+    this.elasticService.getData().subscribe(x => this.response = JSON.stringify(x, null, '  '));
   }
 }
+
