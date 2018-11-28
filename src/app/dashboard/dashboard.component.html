@@ -1,19 +1,89 @@
-<div class="wrapper">
-<div class="dashboard-element small">
-</div>
-<div class="dashboard-element medium">
-  </div>
-<div class="dashboard-element small">
-    <div echarts [options]="chartOption2" style="width: 600px;height:400px;"></div>
-  </div>
-<div class="dashboard-element small">
-  <div echarts [options]="chartOption" style="width: 600px;height:400px;"></div>
-  </div>
-<div class="dashboard-element small">
-    <div echarts [options]="chartOption" ></div>
-  </div>
-<div class="dashboard-element large">
-    <div echarts [options]="chartOption" ></div>
-  </div>
-</div>
- 
+<ul class="wrapper">
+  <li class="dashboard-element small">
+    <div echarts [options]="chartOption2"></div>
+    <div class="editMode">
+      <button class="editBtn"><i class="fa fa-pencil-alt"></i></button>
+      <button class="rulerBtn">
+          <div class="sizeMenu">
+              <ul>
+                  <li><label><input type="radio" name="size" value="small">Small</label></li>
+                  <li><label><input type="radio" name="size" value="medium">Medium</label></li>
+                  <li><label><input type="radio" name="size" value="large">Large</label></li>
+              </ul>
+            </div>
+        <i class="fa fa-ruler-combined"></i>
+      </button>
+      <button class="trashBtn"><i class="fa fa-trash-alt"></i></button>
+    </div>
+  </li>
+  <li class="dashboard-element small">
+    <div echarts [options]="chartOption"></div>
+    <div class="editMode">
+        <button class="editBtn"><i class="fa fa-pencil-alt"></i></button>
+        <button class="rulerBtn">
+            <div class="sizeMenu">
+                <ul>
+                    <li><label><input type="radio" name="size" value="small">Small</label></li>
+                    <li><label><input type="radio" name="size" value="medium">Medium</label></li>
+                    <li><label><input type="radio" name="size" value="large">Large</label></li>
+                </ul>
+              </div>
+          <i class="fa fa-ruler-combined"></i>
+        </button>
+        <button class="trashBtn"><i class="fa fa-trash-alt"></i></button>
+      </div>
+  </li>
+  <li class="dashboard-element small">
+    <div echarts [options]="chartOption"></div>
+    <div class="editMode">
+        <button class="editBtn"><i class="fa fa-pencil-alt"></i></button>
+        <button class="rulerBtn">
+            <div class="sizeMenu">
+                <ul>
+                    <li><label><input type="radio" name="size" value="small">Small</label></li>
+                    <li><label><input type="radio" name="size" value="medium">Medium</label></li>
+                    <li><label><input type="radio" name="size" value="large">Large</label></li>
+                </ul>
+              </div>
+          <i class="fa fa-ruler-combined"></i>
+        </button>
+        <button class="trashBtn"><i class="fa fa-trash-alt"></i></button>
+      </div>
+  </li>
+  <li class="dashboard-element large">
+    <div echarts [options]="chartOption"></div>
+    <div class="editMode">
+        <button class="editBtn"><i class="fa fa-pencil-alt"></i></button>
+        <button class="rulerBtn">
+            <div class="sizeMenu">
+                <ul>
+                    <li><label><input type="radio" name="size" value="small">Small</label></li>
+                    <li><label><input type="radio" name="size" value="medium">Medium</label></li>
+                    <li><label><input type="radio" name="size" value="large">Large</label></li>
+                </ul>
+              </div>
+          <i class="fa fa-ruler-combined"></i>
+        </button>
+        <button class="trashBtn"><i class="fa fa-trash-alt"></i></button>
+      </div>
+  </li>
+  <li class="dashboard-element medium">
+      <div class="editMode">
+          <button class="editBtn"><i class="fa fa-pencil-alt"></i></button>
+          <button class="rulerBtn">
+              <div class="sizeMenu">
+                  <ul>
+                      <li><label><input type="radio" name="size" value="small">Small</label></li>
+                      <li><label><input type="radio" name="size" value="medium">Medium</label></li>
+                      <li><label><input type="radio" name="size" value="large">Large</label></li>
+                  </ul>
+                </div>
+            <i class="fa fa-ruler-combined"></i>
+          </button>
+          <button class="trashBtn"><i class="fa fa-trash-alt"></i></button>
+        </div>
+  </li>
+  <li class="dashboard-element small">
+    <img id="plusImg" src="../../assets/plus.png" />
+  </li>
+</ul>

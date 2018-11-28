@@ -1,15 +1,16 @@
 <div class="wrapper">
-    <div class="editor" ace-editor [(text)]="text" [mode]="'html'" [options]="options">
-    </div>
-    <div class="editor" ace-editor [(text)]="text" [mode]="'html'" [options]="options"></div>
-    <div id="preset">
-        <select>
-            <option value="" disabled selected>PRESET</option>
-            <option value="1">Select by id</option>
-            <option value="2">Select x</option>
-            <option value="3">Select y</option>
-            <option value="4">Select all from</option>
-        </select>
-    </div>
-    <button type="button">SEND <span class="fa fa-paper-plane"></span></button>
+        <div class="editor" ace-editor [(text)]="request" [mode]="'json'" [theme]="'solarized_dark'" [options]="options">
+            <div id="preset">
+                    <select>
+                        <option value="" disabled selected>PRESET</option>
+                        <option value="1">Select by id</option>
+                        <option value="2">Select x</option>
+                        <option value="3">Select y</option>
+                        <option value="4">Select all from</option>
+                    </select>
+                </div>
+                <button id="sendBtn">SEND <span class="fa fa-paper-plane"></span></button>
+        </div>
+    <div class="editor" ace-editor [(text)]="response" [mode]="'json'" [theme]="'solarized_dark'" [options]="options"></div>
+    
 </div>

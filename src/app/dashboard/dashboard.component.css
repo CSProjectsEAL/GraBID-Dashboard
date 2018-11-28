@@ -1,10 +1,14 @@
 .wrapper{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-gap: 15px;
+    margin: 20px;
+    padding: 0;
+    list-style: none;
 }
 
 .dashboard-element{
+    position: relative;
     background: #353c48;
     border: solid 1px #707070;
     padding: 5px;
@@ -13,15 +17,87 @@
 
 .small{
     grid-column-start: auto;
-    grid-column-end: span 1;
+    grid-column-end: span 3;
 }
 
 .medium{
     grid-column-start: auto;
-    grid-column-end: span 2;
+    grid-column-end: span 6;
 }
 
 .large{
     grid-column-start: auto;
-    grid-column-end: span 3;
+    grid-column-end: span 9;
 }
+
+#plusImg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 59px;
+    height: 59px;
+  }
+
+  .editMode{
+      position: absolute;
+      top: 0;
+      right: 0;
+  }
+
+  .editMode button{
+    margin: 3px;
+    width: 30px;
+    height: 25px;
+    border: 1px solid #353c48;
+    border-radius: 5px;
+  }
+
+  .trashBtn{
+    background-color: rgb(233, 102, 102);  
+    font-size: 0.9em;
+  }
+
+  .editBtn{
+    background-color: rgb(235, 169, 83); 
+    font-size: 0.9em;
+  }
+  
+  .rulerBtn{
+    background-color: rgb(47, 224, 255);
+    position: relative; 
+    font-size: 0.9em;
+  }
+
+  .rulerBtn:hover .sizeMenu{
+      display: block;
+  }
+
+  .sizeMenu{
+    display: none;
+    position: absolute;
+    background-color: rgb(47, 224, 255);
+    border: 1px solid rgb(47, 224, 255);
+    border-radius: 3px;
+    top: 24px;
+    left: 50%;
+    padding: 3px;
+    transform: translate(-50%, 0);
+  }
+
+  .sizeMenu ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .sizeMenu ul li label{
+    display: flex;
+    padding: 2px;
+  }
+
+  .sizeMenu input{
+      vertical-align: center;
+      padding: 0;
+      margin-right: 7px;
+  }
