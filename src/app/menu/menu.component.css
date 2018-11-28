@@ -1,0 +1,126 @@
+.wrapper{
+    position: fixed;
+    top: calc(50vh - 201.5px);
+    left: -85px;
+    z-index: 99;
+    height: 403px;
+    width: 100px;
+    background-color: #2B2F3A;
+    border: 1px solid #2B2F3A;
+    border-radius: 0px 34px 34px 0px;
+    transition: left 0.3s;
+}
+
+.wrapper:hover .menuArrow{
+    display: none;
+}
+
+.wrapper:hover{
+    left: 0;
+}
+
+.wrapper:hover .menuItem:not(:first-child){
+    border-top: 1px solid #81889F;
+}
+
+.menuItem{
+    position: relative;
+    height: 100px;
+    width: 100px;
+    color:#81889F;
+}
+
+.menuItem > i {
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    font-size: 3.5em;
+}
+
+.menuItem:hover {
+    color: #FDFDFD;
+    cursor: pointer;
+}
+
+.menuArrow{
+  color: #81889F;
+  font-size: 1.3em;
+  font-weight: bold;
+  position: absolute;
+  top: 191.5px;
+  right: 5px;
+}
+
+.dashboard-sub-menu
+{
+    position: absolute;
+    top: 0;
+    left: 100px;
+    background-color: #2B2F3A;
+    overflow: auto;
+    display: none;
+}
+
+.dashboard-sub-menu ul
+{
+    list-style: none;
+    font-size: 1em;
+    margin:0;
+    padding:0;
+}
+
+.dashboard-sub-menu ul li
+{
+    padding: 5px;
+    margin-left: 10px;
+}
+
+.add-dashboard-form
+{
+    width: 100%;
+    min-width: 150px;
+    display: flex;
+    flex-wrap: nowrap;
+    border-top: 1px solid #81889F;
+    padding-top: 10px;
+}
+
+.add-dashboard-form > div{
+    width: 100%;
+    text-align: center;
+    padding-bottom: 5px;
+    font-weight: bolder;
+    color: #2aa198;
+}
+
+.add-dashboard-form button
+{
+    width: 40px;
+    height: 30px;
+    background-color: #36BEA6;
+    border: 1px solid #36BEA6;
+    border-radius: 5px;
+    color: #FDFDFD;
+    font-size: 0.8em;
+    margin: 5px;
+}
+
+.add-dashboard-form input
+{
+    background-color: #61687A;
+    border: 1px solid #61687A;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 5px;
+    color: #FDFDFD;
+    }
+
+.dashboard-item:hover .dashboard-sub-menu
+{
+    display: block;
+}
+
+.hide-element{
+    display: none;
+}
