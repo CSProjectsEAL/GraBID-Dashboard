@@ -25,7 +25,6 @@ export class SearchComponent implements OnInit {
    }
 
   ngOnInit() {
-    this.elasticService.getData().subscribe(x => this.response = JSON.stringify(x, null, '  '));
   }
 }
 

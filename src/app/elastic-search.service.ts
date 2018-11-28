@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 const httpOptions = {
-  headers: new HttpHeaders({'Authorization':'Basic ' + btoa('admin:admin')})
+  headers: new HttpHeaders({ 'Authorization': 'Basic ' + btoa('admin:admin'), 'Content-Type': 'application/json' })
 };
 
-const baseUrl = 'http://10.140.72.54:9200';
+const baseUrl = 'http://10.140.72.54:9200/';
 
 @Injectable({
   providedIn: 'root'
@@ -15,33 +16,52 @@ export class ElasticSearchService {
 
   constructor(private http: HttpClient) { }
 
-  sendRequest(httpMethod: string, requestUrl: string, requestBody: string): Observable<any>{
-    switch(httpMethod.toUpperCase()){
-      case 'GET': //get method
-        return this.getData();
-        break;
-      case 'POST': //post method
-        break;
-        case 'PUT': //put method
-        break;
-      case 'DELETE': //delete method
-        break;
+  sendRequest(httpMethod: string, requestUrl: string, requestBody?: string): Observable<any> {
+
+    if (httpMethod.toUpperCase() == 'GET' && requestBody != '')
+      httpMethod = 'POST';
+
+    switch (httpMethod.toUpperCase()) {
+      case 'GET': 
+        return this.getData(requestUrl);
+      case 'POST': 
+        return this.postData(requestUrl, requestBody);
+      case 'PUT': 
+        return this.putData(requestUrl, requestBody);
+      case 'DELETE': 
+        return this.deleteData(requestUrl);
     }
   }
 
-  getData(): Observable<any> {
-    return this.http.get<any>(baseUrl, httpOptions);
-  }
-
-  postData(){
-
-  }
-
-  putData(){
-
-  }
-
-  deleteData(){
+  private getData(requestUrl: string): Observable<any> {
+    return this.http.get<any>(baseUrl + requestUrl, httpOptions).pipe(
+      catchError(this.handleError<any>())
+    );
     
+  }
+
+  private postData(requestUrl: string, requestBody: string) {
+    return this.http.post<any>(baseUrl + requestUrl, requestBody, httpOptions).pipe(
+      catchError(this.handleError<any>())
+    );
+  }
+
+  private putData(requestUrl: string, requestBody: string) {
+    return this.http.put<any>(baseUrl + requestUrl, requestBody, httpOptions).pipe(
+      catchError(this.handleError<any>())
+    );
+  }
+
+  private deleteData(requestUrl: string) {
+    return this.http.delete<any>(baseUrl + requestUrl, httpOptions).pipe(
+      catchError(this.handleError<any>())
+    );
+  }
+
+  private handleError<T>(){
+    return (error: any): Observable<T> => {
+      console.error(error);
+      return of(error.error as T);
+    };
   }
 }
