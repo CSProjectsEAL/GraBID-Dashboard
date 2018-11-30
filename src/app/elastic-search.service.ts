@@ -7,7 +7,7 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Authorization': 'Basic ' + btoa('admin:admin'), 'Content-Type': 'application/json' })
 };
 
-const baseUrl = 'http://192.168.0.13:9200/';
+const baseUrl = 'http://10.140.77.58:9200/';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class ElasticSearchService {
 
     console.log(httpMethod + ' ' + requestUrl);
 
-    if (httpMethod.toUpperCase() == 'GET' && requestBody != '')
+    if (httpMethod.toUpperCase() == 'GET' && requestBody != null)
       httpMethod = 'POST';
 
     switch (httpMethod.toUpperCase()) {

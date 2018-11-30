@@ -19,8 +19,12 @@
     left: 0;
 }
 
-.wrapper:hover .menuItem:not(:first-child){
+.wrapper:hover .menuItem{
     border-top: 1px solid #81889F;
+}
+
+.wrapper:hover .dashboard-logo{
+    border-top: 0px;
 }
 
 .menuItem{
@@ -76,6 +80,17 @@
     margin-left: 10px;
 }
 
+.dashboard-sub-menu ul a
+{
+    text-decoration: none;
+    color:#81889F;
+}
+
+.dashboard-sub-menu ul a:hover
+{
+    color: #FDFDFD;
+}
+
 .add-dashboard-form
 {
     width: 100%;
@@ -119,8 +134,4 @@
 .dashboard-item:hover .dashboard-sub-menu
 {
     display: block;
-}
-
-.hide-element{
-    display: none;
 }

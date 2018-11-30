@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ElasticSearchService } from '../elastic-search.service';
 
 declare var $: any;
 
@@ -8,8 +9,9 @@ declare var $: any;
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
+  dashboardNames: any[] = [];
 
-  constructor() { }
+  constructor(private elasticSearchService: ElasticSearchService) { }
 
   ngOnInit() {
     $(document).ready(function(){
@@ -18,6 +20,16 @@ export class MenuComponent implements OnInit {
         $('#addTxt').hide();
       });
     });
+
+    
+    this.elasticSearchService.sendRequest('GET', 'dashboards/_search').subscribe(data => {
+      for (let hit of data.hits.hits){
+        this.dashboardNames.push({name: hit._source.name, id: hit._id});
+      };
+    });
   }
 
+  redirectToDashboard(name: string){
+    console.log(name);
+  }
 }
