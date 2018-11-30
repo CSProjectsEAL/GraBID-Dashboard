@@ -10,6 +10,7 @@ import { SearchComponent } from './search/search.component';
 import { MenuComponent } from './menu/menu.component';
 import { DashboardElementComponent } from './dashboard-element/dashboard-element.component';
 import { AppRoutingModule } from './app-routing.module';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { AppRoutingModule } from './app-routing.module';
     SearchComponent,
     MenuComponent,
     DashboardElementComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,
