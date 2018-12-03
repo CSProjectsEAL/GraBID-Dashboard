@@ -9,9 +9,9 @@
                 </a>
             </ul>
             <div class="add-dashboard-form">
-                <div id="addTxt">Add dashboard</div>
-                <input class="hide-element" type="text" placeholder="Dashboard name">
-                <button class="hide-element"><i class="fa fa-plus"></i></button>
+                <div id="addTxt" *ngIf="!addDashboard" (click)="addDashboard = true">Add dashboard</div>
+                <input type="text" placeholder="Dashboard name" [(ngModel)]="newDashboardName" *ngIf="addDashboard">
+                <button *ngIf="addDashboard" (click)="addNewDashboard()"><i class="fa fa-plus"></i></button>
             </div>
         </div>
     </div>

@@ -3,7 +3,6 @@ import { EChartOption } from 'echarts';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { ElasticSearchService } from '../elastic-search.service';
 import { filter } from 'rxjs/operators';
-import * as crypto from 'crypto-js';
 import { DndListEvent } from '@fjsc/ng2-dnd-list';
 import { DashboardService } from '../dashboard.service';
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardService } from '../dashboard.service';
+import { Router } from '@angular/router';
 
 declare var $: any;
 
@@ -10,21 +11,21 @@ declare var $: any;
 })
 export class MenuComponent implements OnInit {
   dashboards: Map<string, any>;
+  newDashboardName: string;
+  addDashboard: boolean;
 
-  constructor(private dashboardService: DashboardService) { }
+  constructor(private dashboardService: DashboardService, private router: Router) { }
 
   ngOnInit() {
-    $(document).ready(function(){
-      $('#addTxt').click(function(){
-        $('.add-dashboard-form .hide-element').show();
-        $('#addTxt').hide();
-      });
-    });
-
     this.dashboardService.getAllDashboards().subscribe(data => this.dashboards = data);
   }
 
-  redirectToDashboard(name: string){
-    console.log(name);
+  private addNewDashboard(){
+    let dashboard = {
+      name: this.newDashboardName, timestamp: Date.now().toString(), elements: []
+    };
+    let id = this.dashboardService.addDashboard(dashboard);
+
+    this.router.navigate(['/dashboard/' + id + '/edit']);
   }
 }

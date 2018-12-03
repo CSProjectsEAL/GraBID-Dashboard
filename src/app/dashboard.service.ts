@@ -42,11 +42,11 @@ export class DashboardService {
     });
   }
 
-  addDashboard(dashboard: any) {
-    let timeStamp = Date.now().toString();
-    let id = crypto.SHA256(timeStamp).toString();
-    dashboard.timeStamp = timeStamp;
-
+  addDashboard(dashboard: any): string {
+    let id = crypto.SHA256(dashboard.timeStamp).toString();
     this.dashboards.set(id, dashboard);
+    this.updateDashboard(id, dashboard);
+
+    return id;
   }
 }
