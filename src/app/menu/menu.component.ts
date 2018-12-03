@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ElasticSearchService } from '../elastic-search.service';
+import { DashboardService } from '../dashboard.service';
 
 declare var $: any;
 
@@ -9,9 +9,9 @@ declare var $: any;
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-  dashboardNames: any[] = [];
+  dashboards: Map<string, any>;
 
-  constructor(private elasticSearchService: ElasticSearchService) { }
+  constructor(private dashboardService: DashboardService) { }
 
   ngOnInit() {
     $(document).ready(function(){
@@ -21,12 +21,7 @@ export class MenuComponent implements OnInit {
       });
     });
 
-    
-    this.elasticSearchService.sendRequest('GET', 'dashboards/_search').subscribe(data => {
-      for (let hit of data.hits.hits){
-        this.dashboardNames.push({name: hit._source.name, id: hit._id});
-      };
-    });
+    this.dashboardService.getAllDashboards().subscribe(data => this.dashboards = data);
   }
 
   redirectToDashboard(name: string){

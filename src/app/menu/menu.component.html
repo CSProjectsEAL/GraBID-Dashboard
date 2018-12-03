@@ -4,8 +4,8 @@
         <i class="fa fa-chart-line"></i>
         <div class="dashboard-sub-menu">
             <ul>
-                <a *ngFor="let dashboard of dashboardNames" routerLink="/dashboard/{{dashboard.id}}">
-                    <li>{{dashboard.name}}</li>
+                <a *ngFor="let dashboard of dashboards | keyvalue" routerLink="/dashboard/{{dashboard.key}}">
+                    <li>{{dashboard.value.name}}</li>
                 </a>
             </ul>
             <div class="add-dashboard-form">
