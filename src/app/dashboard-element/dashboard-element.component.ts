@@ -1,6 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { EChartOption } from 'echarts';
-import { preserveWhitespacesDefault } from '@angular/compiler';
+import { ActivatedRoute, Router} from '@angular/router';
+import { Location } from '@angular/common';
+
+import { ElasticSearchService } from '../elastic-search.service';
+import { DashboardService } from '../dashboard.service';
+import { PieService } from "../chart-types/pie.service";
+
+const esb = require('elastic-builder');
 
 @Component({
   selector: 'app-dashboard-element',
@@ -8,87 +15,55 @@ import { preserveWhitespacesDefault } from '@angular/compiler';
   styleUrls: ['./dashboard-element.component.css']
 })
 export class DashboardElementComponent implements OnInit {
-  data =
-    {
-      legendData: ["TERMINATION", "STARTUP", "RENEWAL", "CHANGE", "OTHER"],
-      seriesData: [{
-        name: "TERMINATION",
-        value: 45,
-        label: {
-          normal: {
-            formatter: ['45%'].join()
-          }
-        }
-      }, {
-        name: "STARTUP",
-        value: 27,
-        label: {
-          normal: {
-            formatter: ['27%'].join()
-          }
-        }
-      }, {
-        name: "RENEWAL",
-        value: 13,
-        label: {
-          normal: {
-            formatter: ['13%'].join()
-          }
-        }
-      }, {
-        name: "CHANGE",
-        value: 10,
-        label: {
-          normal: {
-            formatter: ['10%'].join()
-          }
-        }
-      }, {
-        name: "OTHER",
-        value: 5,
-        label: {
-          normal: {
-            formatter: ['5%'].join()
-          }
-        }
-      }]
-    };
+  element: any = {};
+  field: string;
+  orderBy: string = "_count";
+  order: string = "desc";
+  chartOption: EChartOption;
+  fields: string[] = [];
 
-    chartOption: EChartOption = {
-    color : ['#06a87b', '#0684a8', '#047556', '#9bdcca', '#e6f6f1', '#50a8c2'],
-    tooltip: {
-      trigger: 'item',
-      formatter: "{a} <br/>{b} : {d}%"
-    },
-    legend: {
-      type: 'scroll',
-      orient: 'vertical',
-      top: 'middle',
-      x: 'center',
-      textStyle: {color: 'color', fontFamily: 'Open Sans', fontWeight: 'bold'},
-      data: this.data.legendData
-    },
-    series: [
-      {
-        name: 'Subscription Type',
-        type: 'pie',
-        radius: '55%',
-        center: ['30%', '50%'],
-        data: this.data.seriesData,
-        emphasis: {
-          itemStyle: {
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
-            shadowBlur: 20,
-            shadowOffsetX: 0
-          }
-        }
-      }
-    ]
-  };
-
-  constructor() { }
+  constructor(private dashboardService: DashboardService, private elasticSearchService: ElasticSearchService, private pieService: PieService, private router: Router, private route: ActivatedRoute, private location: Location) { }
 
   ngOnInit() {
+    this.element = this.dashboardService.getAndSetCurrentElement(this.route.snapshot.paramMap.get('id'));
+    this.elasticSearchService.sendRequest('GET', 'test').subscribe(data =>{
+      let properties = data.test.mappings.demo.properties;
+
+      for (let property in properties){
+        let name = property;
+
+        if(properties[property].fields)
+          name += '.' + properties[property].fields.keyword.type;
+        this.fields.push(name);
+      }
+    });
+
+    if (this.element == null)
+      this.router.navigate(['404/1']);
+    else
+      this.refreshData(this.element.query);
+
+  }
+
+  refreshData(query: string) {
+    switch (this.element.type){
+      case 'pie': this.pieService.executeQuery(query).subscribe(data => this.chartOption = data);
+      break;
+    }
+  }
+
+  private refreshPreview(){
+    let agg = esb.termsAggregation('pie', this.field).size(5).order(this.orderBy, this.order);
+    let query = JSON.stringify(esb.requestBodySearch().agg(agg).size(0).toJSON());
+
+    this.element.query = query;
+
+    this.refreshData(query);
+  }
+
+  private saveElement(){
+    this.location.back();
+    this.dashboardService.updateElement(this.element);
   }
 
 }

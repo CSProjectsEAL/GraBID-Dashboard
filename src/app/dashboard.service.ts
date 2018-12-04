@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { ElasticSearchService } from './elastic-search.service';
 import * as crypto from 'crypto-js';
 import { Observable, of } from 'rxjs';
-import { promisify } from 'util';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
-  dashboards = new Map<string, any>();
+  private dashboards = new Map<string, any>();
+  currentDashboard: any = {};
+  currentElement: any = {};
 
   constructor(private elasticSearchService: ElasticSearchService) { }
 
@@ -23,7 +24,7 @@ export class DashboardService {
 
   getDashboard(id: string): Observable<any> {
     if (this.dashboards.has(id))
-      return of({ found: true, _source: this.dashboards.get(id)});
+      return of({ found: true, _source: this.dashboards.get(id) });
     else
       return this.elasticSearchService.sendRequest('GET', 'dashboards/dashboard/' + id);
   }
@@ -48,5 +49,27 @@ export class DashboardService {
     this.updateDashboard(id, dashboard);
 
     return id;
+  }
+
+  getAndSetCurrentElement(id: string): any {
+    this.currentElement = null;
+
+    if (this.currentDashboard.elements) {
+      for (let element of this.currentDashboard.elements) {
+        if (id == element.id)
+          this.currentElement = element;
+      }
+    }
+
+    return this.currentElement;
+  }
+
+  updateElement(element: any) {
+    let elements = this.currentDashboard.elements;
+    for (let i in elements)
+      if (elements[i].id == element.id)
+        elements[i] = element;
+
+    console.log(this.currentDashboard);
   }
 }

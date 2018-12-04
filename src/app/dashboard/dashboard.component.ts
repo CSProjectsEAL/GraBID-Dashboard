@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { EChartOption } from 'echarts';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { ElasticSearchService } from '../elastic-search.service';
 import { filter } from 'rxjs/operators';
 import { DndListEvent } from '@fjsc/ng2-dnd-list';
+
+import { ElasticSearchService } from '../elastic-search.service';
 import { DashboardService } from '../dashboard.service';
+import { PieService } from '../chart-types/pie.service';
 
 declare var $: any;
 
@@ -19,71 +21,9 @@ export class DashboardComponent implements OnInit {
     editMode: boolean;
     isNameInvalid: boolean;
     lastIndex: number;
+    chartOptions = new Map<string, EChartOption>();
 
-    chartOption: EChartOption = {
-        color: ['#06a87b', '#0684a8', '#047556', '#9bdcca', '#e6f6f1', '#50a8c2'],
-        xAxis: {
-            type: 'category',
-            data: ['RENEWAL', 'STARTUP', 'TERMINATION', 'CHANGE'],
-            axisTick: {
-                alignWithLabel: true
-            },
-            axisLine: {
-                lineStyle: { color: 'white' }
-            }
-        },
-        yAxis: {
-            type: 'value',
-            axisLine: {
-                lineStyle: { color: 'white' }
-            }
-        },
-        series: [{
-            data: [14687, '-', '-', '-'],
-            type: 'bar',
-            stack: 'full'
-        },
-        {
-            data: ['-', 13342, '-', '-'],
-            type: 'bar',
-            stack: 'full'
-        },
-        {
-            data: ['-', '-', 4644, '-'],
-            type: 'bar',
-            stack: 'full'
-        },
-        {
-            data: ['-', '-', '-', 2049],
-            type: 'bar',
-            stack: 'full'
-        }]
-    };
-
-    chartOption2: EChartOption = {
-        color: ['blue'],
-        xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            axisLine: {
-                lineStyle: { color: 'white' }
-            }
-        },
-        yAxis: {
-            type: 'value',
-            axisLine: {
-                lineStyle: { color: 'white' }
-            }
-        },
-        series: [{
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
-            type: 'line',
-            areaStyle: {}
-        }]
-    };
-
-    constructor(private route: ActivatedRoute, private elasticSearchService: ElasticSearchService, private dashboardService: DashboardService, private router: Router) { }
+    constructor(private route: ActivatedRoute, private elasticSearchService: ElasticSearchService, private dashboardService: DashboardService, private pieService: PieService, private router: Router) { }
 
     ngOnInit() {
         this.dashboardId = this.route.snapshot.paramMap.get('id');
@@ -104,8 +44,15 @@ export class DashboardComponent implements OnInit {
                 this.dashboard = dashboard;
                 this.dashboard.elements.sort(this.compareElements);
 
+                let elements = this.dashboard.elements;
+                for (let i in elements){
+                    this.pieService.executeQuery(elements[i].query).subscribe(data => this.chartOptions.set(elements[i].id, data));
+                }
+
                 if (this.route.snapshot.paramMap.get('mode') == 'edit')
                     this.editMode = true;
+                
+                this.dashboardService.currentDashboard = this.dashboard;
             }
         });
     }
@@ -154,4 +101,8 @@ export class DashboardComponent implements OnInit {
     private navigateToEditMode(){
         this.router.navigate(['/dashboard/' + this.dashboardId + '/edit']);
     }
+
+    private editElement(id: string){
+        this.router.navigate(['/edit-element/' + id]);
+  }
 }

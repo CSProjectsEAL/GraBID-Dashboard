@@ -27,6 +27,12 @@
     border-top: 0px;
 }
 
+.dashboard-logo{
+    background: url('../../assets/logo.png') no-repeat;
+    background-size: 68%;
+    background-position: center;
+}
+
 .menuItem{
     position: relative;
     height: 100px;

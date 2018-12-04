@@ -9,9 +9,9 @@
 </div>
 <ul [(dndList)]="dashboard.elements" (dndDrop)="onDrop($event)" id="dashboard" class="wrapper">
     <li *ngFor="let element of dashboard.elements; let i=index;" [dndDraggable]="element" dndEffectAllowed="move" (dndMoved)="moved(i, dashboard.elements)" [dndDisable]="!editMode" class="dashboard-element {{element.size}}">
-        <div echarts [options]="chartOption2"></div>
+        <div echarts [options]="chartOptions.get(element.id)"></div>
         <div *ngIf="editMode" class="editMode">
-            <button class="editBtn"><i class="fa fa-pencil-alt"></i></button>
+            <button class="editBtn" (click)="editElement(element.id)"><i class="fa fa-pencil-alt"></i></button>
             <button class="rulerBtn">
                 <div class="sizeMenu">
                     <ul>
