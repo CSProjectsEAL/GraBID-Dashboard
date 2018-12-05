@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EChartOption } from 'echarts';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { DndListEvent } from '@fjsc/ng2-dnd-list';
 
@@ -8,6 +8,7 @@ import { ElasticSearchService } from '../elastic-search.service';
 import { DashboardService } from '../dashboard.service';
 import { PieChart } from '../chart-types/pieChart';
 import { BarChart } from '../chart-types/barChart';
+import { Navigation } from 'selenium-webdriver';
 
 declare var $: any;
 
@@ -33,6 +34,10 @@ export class DashboardComponent implements OnInit {
     constructor(private route: ActivatedRoute, private elasticSearchService: ElasticSearchService, private dashboardService: DashboardService, private router: Router) { }
 
     ngOnInit() { }
+
+    ngOnDestroy(){
+        this.subscription.unsubscribe();
+    }
 
     private refreshDashboardData(id: string) {
         this.dashboardService.getDashboard(id).subscribe(data => {
