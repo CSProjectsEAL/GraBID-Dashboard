@@ -1,8 +1,9 @@
 <div class="wrapper">
   <div class="element-properties">
-    <select>
+    <select (change)="type = $event.target.value">
       <option value="type" disabled selected>Type</option>
-      <option value="pieChart">Pie chart</option>
+      <option value="pie">Pie chart</option>
+      <option value="bar">Bar chart</option>
     </select>
     <label>Field</label>
     <select (change)="field = $event.target.value">

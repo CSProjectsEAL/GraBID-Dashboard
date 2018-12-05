@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { EChartOption } from 'echarts';
-import { ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { ElasticSearchService } from '../elastic-search.service';
 import { DashboardService } from '../dashboard.service';
-import { PieService } from "../chart-types/pie.service";
+import { PieChart } from "../chart-types/pieChart";
+import { BarChart } from '../chart-types/barChart';
+import { map } from 'rxjs/operators';
 
 const esb = require('elastic-builder');
 
@@ -16,23 +18,27 @@ const esb = require('elastic-builder');
 })
 export class DashboardElementComponent implements OnInit {
   element: any = {};
+  type: string;
   field: string;
   orderBy: string = "_count";
   order: string = "desc";
   chartOption: EChartOption;
   fields: string[] = [];
+  add: boolean = false;
 
-  constructor(private dashboardService: DashboardService, private elasticSearchService: ElasticSearchService, private pieService: PieService, private router: Router, private route: ActivatedRoute, private location: Location) { }
+  constructor(private dashboardService: DashboardService, private elasticSearchService: ElasticSearchService, private router: Router, private route: ActivatedRoute, private location: Location) { }
 
   ngOnInit() {
+    this.add = this.route.snapshot.paramMap.get('id') == 'add';
+
     this.element = this.dashboardService.getAndSetCurrentElement(this.route.snapshot.paramMap.get('id'));
-    this.elasticSearchService.sendRequest('GET', 'test').subscribe(data =>{
+    this.elasticSearchService.sendRequest('GET', 'test').subscribe(data => {
       let properties = data.test.mappings.demo.properties;
 
-      for (let property in properties){
+      for (let property in properties) {
         let name = property;
 
-        if(properties[property].fields)
+        if (properties[property].fields)
           name += '.' + properties[property].fields.keyword.type;
         this.fields.push(name);
       }
@@ -46,24 +52,29 @@ export class DashboardElementComponent implements OnInit {
   }
 
   refreshData(query: string) {
-    switch (this.element.type){
-      case 'pie': this.pieService.executeQuery(query).subscribe(data => this.chartOption = data);
-      break;
-    }
+    this.elasticSearchService.sendRequest('GET', 'test/_search', query).subscribe(data => {
+      switch (this.element.type) {
+        case 'pie': this.chartOption = PieChart.executeQuery(data);
+          break;
+        case 'bar': this.chartOption = BarChart.executeQuery(data);
+          break;
+      }
+    });
   }
 
-  private refreshPreview(){
+  private refreshPreview() {
     let agg = esb.termsAggregation('pie', this.field).size(5).order(this.orderBy, this.order);
     let query = JSON.stringify(esb.requestBodySearch().agg(agg).size(0).toJSON());
 
     this.element.query = query;
+    this.element.type = this.type;
 
     this.refreshData(query);
   }
 
-  private saveElement(){
+  private saveElement() {
     this.location.back();
-    this.dashboardService.updateElement(this.element);
+    this.dashboardService.updateElement(this.element, this.add);
   }
 
 }

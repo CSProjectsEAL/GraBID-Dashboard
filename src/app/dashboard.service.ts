@@ -44,7 +44,7 @@ export class DashboardService {
   }
 
   addDashboard(dashboard: any): string {
-    let id = crypto.SHA256(dashboard.timeStamp).toString();
+    let id = crypto.SHA256(dashboard.timestamp).toString();
     this.dashboards.set(id, dashboard);
     this.updateDashboard(id, dashboard);
 
@@ -54,22 +54,38 @@ export class DashboardService {
   getAndSetCurrentElement(id: string): any {
     this.currentElement = null;
 
-    if (this.currentDashboard.elements) {
-      for (let element of this.currentDashboard.elements) {
-        if (id == element.id)
-          this.currentElement = element;
+    if (id == "add") {
+      this.currentElement = {
+        id: crypto.SHA256(Date.now().toString()).toString(),
+        order: this.currentDashboard.elements.length,
+        size: 'small',
+        query: '',
+        type: '',
+        properties: []
+      }
+    }
+    else {
+
+      if (this.currentDashboard.elements) {
+        for (let element of this.currentDashboard.elements) {
+          if (id == element.id)
+            this.currentElement = element;
+        }
       }
     }
 
     return this.currentElement;
   }
 
-  updateElement(element: any) {
+  updateElement(element: any, newElement?: boolean) {
     let elements = this.currentDashboard.elements;
-    for (let i in elements)
-      if (elements[i].id == element.id)
-        elements[i] = element;
-
-    console.log(this.currentDashboard);
+    if (!newElement) {
+      for (let i in elements)
+        if (elements[i].id == element.id)
+          elements[i] = element;
+    }
+    else {
+      this.currentDashboard.elements.push(element);
+    }
   }
 }

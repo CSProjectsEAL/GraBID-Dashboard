@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { EChartOption } from 'echarts';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { DndListEvent } from '@fjsc/ng2-dnd-list';
 
 import { ElasticSearchService } from '../elastic-search.service';
 import { DashboardService } from '../dashboard.service';
-import { PieService } from '../chart-types/pie.service';
+import { PieChart } from '../chart-types/pieChart';
+import { BarChart } from '../chart-types/barChart';
 
 declare var $: any;
 
@@ -20,38 +21,46 @@ export class DashboardComponent implements OnInit {
     dashboardId: string;
     editMode: boolean;
     isNameInvalid: boolean;
+    dataLoaded: boolean;
     lastIndex: number;
     chartOptions = new Map<string, EChartOption>();
 
-    constructor(private route: ActivatedRoute, private elasticSearchService: ElasticSearchService, private dashboardService: DashboardService, private pieService: PieService, private router: Router) { }
-
-    ngOnInit() {
+    subscription = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
         this.dashboardId = this.route.snapshot.paramMap.get('id');
         this.refreshDashboardData(this.dashboardId);
+    });
 
-        this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
-            this.dashboardId = this.route.snapshot.paramMap.get('id');
-            this.refreshDashboardData(this.dashboardId);
-        });
-    }
+    constructor(private route: ActivatedRoute, private elasticSearchService: ElasticSearchService, private dashboardService: DashboardService, private router: Router) { }
+
+    ngOnInit() { }
 
     private refreshDashboardData(id: string) {
         this.dashboardService.getDashboard(id).subscribe(data => {
-            if (data.found == false)
+            if (data.found == false) {
                 this.router.navigate(['/404/2']);
+                this.subscription.unsubscribe();
+            }
             else {
+                this.dataLoaded = true;
                 let dashboard = data._source;
                 this.dashboard = dashboard;
                 this.dashboard.elements.sort(this.compareElements);
 
                 let elements = this.dashboard.elements;
-                for (let i in elements){
-                    this.pieService.executeQuery(elements[i].query).subscribe(data => this.chartOptions.set(elements[i].id, data));
+                for (let i in elements) {
+                    this.elasticSearchService.sendRequest('GET', 'test/_search', elements[i].query).subscribe(data => {
+                        switch (elements[i].type) {
+                            case 'pie': this.chartOptions.set(elements[i].id, PieChart.executeQuery(data));
+                                break;
+                            case 'bar': this.chartOptions.set(elements[i].id, BarChart.executeQuery(data));
+                                break;
+                        }
+                    });
                 }
 
                 if (this.route.snapshot.paramMap.get('mode') == 'edit')
                     this.editMode = true;
-                
+
                 this.dashboardService.currentDashboard = this.dashboard;
             }
         });
@@ -98,11 +107,15 @@ export class DashboardComponent implements OnInit {
         this.lastIndex = event.index;
     }
 
-    private navigateToEditMode(){
+    private navigateToEditMode() {
         this.router.navigate(['/dashboard/' + this.dashboardId + '/edit']);
     }
 
-    private editElement(id: string){
+    private editElement(id: string) {
         this.router.navigate(['/edit-element/' + id]);
-  }
+    }
+
+    private addElement() {
+        this.router.navigate(['/edit-element/add']);
+    }
 }
