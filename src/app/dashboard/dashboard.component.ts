@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { EChartOption } from 'echarts';
-import { ActivatedRoute, Router, NavigationEnd, NavigationStart } from '@angular/router';
-import { filter, map } from 'rxjs/operators';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { DndListEvent } from '@fjsc/ng2-dnd-list';
+import { Location } from '@angular/common';
 
 import { ElasticSearchService } from '../elastic-search.service';
 import { DashboardService } from '../dashboard.service';
 import { PieChart } from '../chart-types/pieChart';
 import { BarChart } from '../chart-types/barChart';
-import { Navigation } from 'selenium-webdriver';
+import { ExpLineChart } from '../chart-types/expLineChart';
 
 declare var $: any;
 
@@ -31,11 +32,11 @@ export class DashboardComponent implements OnInit {
         this.refreshDashboardData(this.dashboardId);
     });
 
-    constructor(private route: ActivatedRoute, private elasticSearchService: ElasticSearchService, private dashboardService: DashboardService, private router: Router) { }
+    constructor(private route: ActivatedRoute, private elasticSearchService: ElasticSearchService, private dashboardService: DashboardService, private router: Router, private location: Location) { }
 
     ngOnInit() { }
 
-    ngOnDestroy(){
+    ngOnDestroy() {
         this.subscription.unsubscribe();
     }
 
@@ -59,14 +60,19 @@ export class DashboardComponent implements OnInit {
                                 break;
                             case 'bar': this.chartOptions.set(elements[i].id, BarChart.executeQuery(data));
                                 break;
+                            case 'expLine': this.chartOptions.set(elements[i].id, ExpLineChart.executeQuery(data));
+                                break;
                         }
                     });
                 }
 
-                if (this.route.snapshot.paramMap.get('mode') == 'edit')
+                if (this.route.snapshot.paramMap.get('mode') == 'edit') {
                     this.editMode = true;
-
-                this.dashboardService.currentDashboard = this.dashboard;
+                    if(this.dashboardService.dashboardSnapshot == null){
+                        this.dashboardService.dashboardSnapshot = JSON.parse(JSON.stringify(this.dashboard));
+                    }
+                }
+                    this.dashboardService.currentDashboard = this.dashboard;
             }
         });
     }
@@ -87,6 +93,11 @@ export class DashboardComponent implements OnInit {
     private saveDashboard() {
         this.dashboardService.updateDashboard(this.dashboardId, this.dashboard);
         this.router.navigate(['/dashboard/' + this.dashboardId]);
+    }
+
+    private goBack() {
+        this.dashboardService.cancelEdit(this.dashboardId);
+        this.location.back();
     }
 
     private deleteElement(index: number) {

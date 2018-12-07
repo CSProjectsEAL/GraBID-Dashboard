@@ -7,7 +7,7 @@ import { ElasticSearchService } from '../elastic-search.service';
 import { DashboardService } from '../dashboard.service';
 import { PieChart } from "../chart-types/pieChart";
 import { BarChart } from '../chart-types/barChart';
-import { map } from 'rxjs/operators';
+import { ExpLineChart } from '../chart-types/expLineChart';
 
 const esb = require('elastic-builder');
 
@@ -25,13 +25,14 @@ export class DashboardElementComponent implements OnInit {
   chartOption: EChartOption;
   fields: string[] = [];
   add: boolean = false;
+  test: boolean;
 
   constructor(private dashboardService: DashboardService, private elasticSearchService: ElasticSearchService, private router: Router, private route: ActivatedRoute, private location: Location) { }
 
   ngOnInit() {
     this.add = this.route.snapshot.paramMap.get('id') == 'add';
 
-    this.element = this.dashboardService.getAndSetCurrentElement(this.route.snapshot.paramMap.get('id'));
+    this.element = JSON.parse(JSON.stringify(this.dashboardService.getAndSetCurrentElement(this.route.snapshot.paramMap.get('id'))));
     this.elasticSearchService.sendRequest('GET', 'test').subscribe(data => {
       let properties = data.test.mappings.demo.properties;
 
@@ -57,6 +58,8 @@ export class DashboardElementComponent implements OnInit {
         case 'pie': this.chartOption = PieChart.executeQuery(data);
           break;
         case 'bar': this.chartOption = BarChart.executeQuery(data);
+          break; 
+        case 'expLine': this.chartOption = ExpLineChart.executeQuery(data);
           break;
       }
     });
@@ -74,7 +77,16 @@ export class DashboardElementComponent implements OnInit {
 
   private saveElement() {
     this.location.back();
+    console.log(this.element);
     this.dashboardService.updateElement(this.element, this.add);
+  }
+
+  private goBack() {
+    this.location.back();
+  }
+
+  private changeType(type: string){
+    this.type = type;
   }
 
 }

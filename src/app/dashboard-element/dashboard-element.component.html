@@ -1,25 +1,46 @@
 <div class="wrapper">
+  <div *ngIf="type == 'pie'">
+    <app-search></app-search>
+  </div>
+  <div *ngIf="type == 'bar'">
+    <app-page-not-found></app-page-not-found>
+  </div>
   <div class="element-properties">
-    <select (change)="type = $event.target.value">
-      <option value="type" disabled selected>Type</option>
-      <option value="pie">Pie chart</option>
-      <option value="bar">Bar chart</option>
-    </select>
-    <label>Field</label>
-    <select (change)="field = $event.target.value">
+    <div>
+      <label>Chart type</label>
+      <select (click)="changeType($event.target.value)">
+        <option value="type" disabled selected>Type</option>
+        <option value="pie">Pie chart</option>
+        <option value="bar">Bar chart</option>
+        <option value="expLine">Exponential line</option>
+      </select>
+    </div>
+    <div>
+      <label>Field</label>
+      <select (change)="field = $event.target.value">
         <option value="field" disabled selected>Field</option>
         <option *ngFor="let field of fields" value="{{field}}">{{field}}</option>
-    </select>
-    <label>Order by</label>
-    <select (change)="orderBy = $event.target.value">
+      </select>
+    </div>
+    <div>
+      <label>Order by</label>
+      <select (change)="orderBy = $event.target.value">
         <option value="_count" selected>Count</option>
         <option value="_key">Alphabetically</option>
-    </select>
-    <select (change)="order = $event.target.value">
+      </select>
+    </div>
+    <div>
+      <label>Sorting</label>
+      <select (change)="order = $event.target.value">
         <option value="asc">Ascending</option>
         <option value="desc" selected>Descending</option>
-    </select>
-    <button id="refreshBtn" (click)="refreshPreview()">REFRESH <span class="fa fa-redo-alt"></span></button>
+      </select>
+    </div>
+    <div>
+      <div></div>
+      <button id="refreshBtn" (click)="refreshPreview()">REFRESH <span class="fa fa-redo-alt"></span></button>
+    </div>
+    <button id="cancelBtn" (click)="goBack()">CANCEL <span class="fa fa-times"></span></button>
     <button id="saveBtn" (click)="saveElement()">SAVE <span class="fa fa-save"></span></button>
   </div>
   <div class="element-presentation">

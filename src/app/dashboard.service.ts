@@ -9,6 +9,7 @@ import { Observable, of } from 'rxjs';
 export class DashboardService {
   private dashboards = new Map<string, any>();
   currentDashboard: any = {};
+  dashboardSnapshot: any = null;
   currentElement: any = {};
 
   constructor(private elasticSearchService: ElasticSearchService) { }
@@ -54,6 +55,9 @@ export class DashboardService {
   getAndSetCurrentElement(id: string): any {
     this.currentElement = null;
 
+    if (this.currentDashboard.name == null)
+      return null;
+
     if (id == "add") {
       this.currentElement = {
         id: crypto.SHA256(Date.now().toString()).toString(),
@@ -87,5 +91,10 @@ export class DashboardService {
     else {
       this.currentDashboard.elements.push(element);
     }
+  }
+
+  cancelEdit(id: string): any {
+    this.dashboards.set(id, this.dashboardSnapshot);
+      this.dashboardSnapshot = null;
   }
 }

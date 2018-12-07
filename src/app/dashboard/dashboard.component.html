@@ -6,6 +6,7 @@
     <div *ngIf="editMode" class="edit">
         <input [class.invalid]="isNameInvalid" [(ngModel)]="dashboard.name">
         <button id="saveBtn" (click)="saveDashboard()">SAVE <span class="fa fa-save"></span></button>
+        <button id="cancelBtn" (click)="goBack()">CANCEL <span class="fa fa-times"></span></button>
         <button id="deleteBtn" (click)="deleteDashboard()">DELETE <span class="fa fa-trash-alt"></span></button>
     </div>
     <ul [(dndList)]="dashboard.elements" (dndDrop)="onDrop($event)" id="dashboard" class="wrapper">
