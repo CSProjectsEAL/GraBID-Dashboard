@@ -9,7 +9,7 @@ export abstract class ExpLineChart {
     this.data = [];
     this.xAxisData = [];
     let count = 0;
-    let buckets = data.aggregations.pie.buckets;
+    let buckets = data.aggregations.expLine.buckets;
 
     for (let key in buckets) {
       let bucket = buckets[key];

@@ -31,6 +31,7 @@ export class DashboardService {
   }
 
   updateDashboard(id: string, dashboard: any) {
+    console.log(dashboard.elements[0]);
     this.elasticSearchService.sendRequest('PUT', 'dashboards/dashboard/' + id, JSON.stringify(dashboard)).subscribe(() => {
       this.dashboards.set(id, dashboard);
     });
@@ -65,7 +66,7 @@ export class DashboardService {
         size: 'small',
         query: '',
         type: '',
-        properties: []
+        properties: null
       }
     }
     else {
@@ -76,7 +77,12 @@ export class DashboardService {
             this.currentElement = element;
         }
       }
+      console.log(this.currentElement);
     }
+
+
+    console.log(this.currentElement);
+    console.log(this.currentDashboard);
 
     return this.currentElement;
   }

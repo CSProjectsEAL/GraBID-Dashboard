@@ -7,9 +7,9 @@ import { Location } from '@angular/common';
 
 import { ElasticSearchService } from '../elastic-search.service';
 import { DashboardService } from '../dashboard.service';
-import { PieChart } from '../chart-types/pieChart';
-import { BarChart } from '../chart-types/barChart';
-import { ExpLineChart } from '../chart-types/expLineChart';
+import { PieChart } from '../chart-types/pie/pieChart';
+import { BarChart } from '../chart-types/bar/barChart';
+import { ExpLineChart } from '../chart-types/exp-line/expLineChart';
 
 declare var $: any;
 
@@ -68,11 +68,11 @@ export class DashboardComponent implements OnInit {
 
                 if (this.route.snapshot.paramMap.get('mode') == 'edit') {
                     this.editMode = true;
-                    if(this.dashboardService.dashboardSnapshot == null){
+                    if (this.dashboardService.dashboardSnapshot == null) {
                         this.dashboardService.dashboardSnapshot = JSON.parse(JSON.stringify(this.dashboard));
                     }
                 }
-                    this.dashboardService.currentDashboard = this.dashboard;
+                this.dashboardService.currentDashboard = this.dashboard;
             }
         });
     }
