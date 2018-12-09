@@ -13,7 +13,13 @@ export abstract class ExpLineChart {
 
     for (let key in buckets) {
       let bucket = buckets[key];
-      this.xAxisData.push(bucket.key);
+
+      if (bucket.key_as_string) {
+        this.xAxisData.push(bucket.key_as_string);
+      }
+      else{
+        this.xAxisData.push(bucket.key);
+      }
 
       this.data.push([count, bucket.doc_count]);
       count++;

@@ -21,7 +21,13 @@ export abstract class BarChart {
       for (let i in buckets) {
         bucketFilters = buckets[i].barFilters.buckets;
         let bucket = buckets[i];
-        this.data.xAxisData.push(bucket.key);
+
+        if (bucket.key_as_string) {
+          this.data.xAxisData.push(bucket.key_as_string);
+        }
+        else{
+          this.data.xAxisData.push(bucket.key);
+        }
 
         for (let property in bucketFilters)
           this.data.seriesData.get(property).data.push(bucketFilters[property].doc_count);
@@ -32,7 +38,14 @@ export abstract class BarChart {
 
       for (let i in buckets) {
         let bucket = buckets[i];
-        this.data.xAxisData.push(bucket.key);
+
+        if (bucket.key_as_string) {
+          this.data.xAxisData.push(bucket.key_as_string);
+        }
+        else{
+          this.data.xAxisData.push(bucket.key);
+        }
+        
         seriesDataArray.push(bucket.doc_count);
       }
 

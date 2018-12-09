@@ -1,32 +1,39 @@
 import { EChartOption } from 'echarts';
 
 export abstract class PieChart {
-   private static data =
+  private static data =
     {
       legendData: [],
       seriesData: []
     };
 
   public static executeQuery(data: any): EChartOption {
-      this.data.legendData = [];
-      this.data.seriesData = [];
-      let buckets = data.aggregations.pie.buckets;
+    this.data.legendData = [];
+    this.data.seriesData = [];
+    let buckets = data.aggregations.pie.buckets;
 
-      for (let key in buckets) {
-        let bucket = buckets[key];
-        this.data.legendData.push(bucket.key);
-
-        this.data.seriesData.push({
-          name: bucket.key,
-          value: bucket.doc_count,
-          label: {
-            normal: {
-              formatter: ['{d}%'].join()
-            }
-          }
-        });
+    for (let key in buckets) {
+      let bucket = buckets[key];
+      let name = '';
+      if (bucket.key_as_string) {
+        name = bucket.key_as_string;
       }
-      return this.getChartOption("asd");
+      else {
+        name = bucket.key;
+      }
+      this.data.legendData.push(name);
+
+      this.data.seriesData.push({
+        name: name,
+        value: bucket.doc_count,
+        label: {
+          normal: {
+            formatter: ['{d}%'].join()
+          }
+        }
+      });
+    }
+    return this.getChartOption('asd');
   }
 
   private static getChartOption(name: string): EChartOption {
