@@ -5,11 +5,13 @@
     </div>
     <div *ngIf="editMode" class="edit">
         <input [class.invalid]="isNameInvalid" [(ngModel)]="dashboard.name">
-        <button id="saveBtn" (click)="saveDashboard()">SAVE <span class="fa fa-save"></span></button>
-        <button id="cancelBtn" (click)="goBack()">CANCEL <span class="fa fa-times"></span></button>
-        <button id="deleteBtn" (click)="deleteDashboard()">DELETE <span class="fa fa-trash-alt"></span></button>
+        <div class="operationBtns">
+            <button id="saveBtn" (click)="saveDashboard()">SAVE <span class="fa fa-save"></span></button>
+            <button id="cancelBtn" (click)="goBack()">CANCEL <span class="fa fa-times"></span></button>
+            <button id="deleteBtn" (click)="deleteDashboard()">DELETE <span class="fa fa-trash-alt"></span></button>
+        </div>
     </div>
-    <ul  *ngIf="dashboard.elements" [(dndList)]="dashboard.elements" (dndDrop)="onDrop($event)" id="dashboard" class="wrapper">
+    <ul *ngIf="dashboard.elements" [(dndList)]="dashboard.elements" (dndDrop)="onDrop($event)" id="dashboard" class="wrapper">
         <li *ngFor="let element of dashboard.elements; let i=index;" [dndDraggable]="element" dndEffectAllowed="move"
             (dndMoved)="moved(i, dashboard.elements)" [dndDisable]="!editMode" class="dashboard-element {{element.size}}">
             <div echarts [options]="chartOptions.get(element.id)"></div>
