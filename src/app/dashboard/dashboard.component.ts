@@ -13,8 +13,9 @@ declare var $: any;
     styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-    elements: any[] = [];
+    dashboard: any = {};
     editMode: boolean;
+    elements: any[] = [];
 
     chartOption: EChartOption = {
         color: ['#06a87b', '#0684a8', '#047556', '#9bdcca', '#e6f6f1', '#50a8c2'],
@@ -93,7 +94,14 @@ export class DashboardComponent implements OnInit {
     }
 
     private refreshDashboardData(id: string) {
+        
         this.elasticSearchService.sendRequest('GET', 'dashboards/dashboard/' + id).subscribe(data => {
+            if(!data.found)
+                this.router.navigate(['/404/2']);
+
+            this.dashboard = {
+                name: data._source.name, timeStamp: data._source.timeStamp, id: data._id, elements: this.elements
+            };
             this.elements = data._source.elements;
             this.elements.sort(this.compareElements);
         });
@@ -121,6 +129,10 @@ export class DashboardComponent implements OnInit {
         if (a.order > b.order)
             return 1;
         return 0;
+    }
+
+    private deleteDashboard(){
+        this.elasticSearchService.sendRequest('DELETE', 'dashboards/dashboard/' + this.dashboard.id).subscribe();
     }
 
 }
