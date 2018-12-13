@@ -1,0 +1,27 @@
+<div class="element-properties">
+  <div>
+    <label>Field</label>
+    <select (change)="field = $event.target.value">
+      <option value="field" disabled selected>Field</option>
+      <option *ngFor="let fieldValue of fields" value="{{fieldValue}}" [selected]="fieldValue == field">{{fieldValue}}</option>
+    </select>
+  </div>
+  <div>
+    <label>Order by</label>
+    <select (change)="orderBy = $event.target.value">
+      <option value="_count" [selected]="'_count' == orderBy">Count</option>
+      <option value="_key" [selected]="'_key' == orderBy">Alphabetically</option>
+    </select>
+  </div>
+  <div>
+    <label>Sorting</label>
+    <select (change)="order = $event.target.value">
+      <option value="asc" [selected]="'asc' == order">Ascending</option>
+      <option value="desc" [selected]="'desc' == order">Descending</option>
+    </select>
+  </div>
+  <div>
+    <div></div>
+    <button id="refreshBtn" (click)="refreshData()">REFRESH <span class="fa fa-redo-alt"></span></button>
+  </div>
+</div>

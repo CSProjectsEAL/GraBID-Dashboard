@@ -1,6 +1,25 @@
 <div class="wrapper">
   <div class="element-properties">
-    <button id="saveBtn">SAVE <span class="fa fa-save"></span></button>
+    <div>
+      <label>Chart type</label>
+      <select (change)="changeType($event.target.value)">
+        <option value="type" disabled selected>Type</option>
+        <option value="pie" [selected]="type=='pie'">Pie chart</option>
+        <option value="bar" [selected]="type=='bar'">Bar chart</option>
+        <option value="expLine" [selected]="type=='expLine'">Exponential line</option>
+      </select>
+    </div>
+    <div *ngIf="type == 'pie'">
+      <app-pie [(properties)]="properties"></app-pie>
+    </div>
+    <div *ngIf="type == 'bar'">
+      <app-bar [(properties)]="properties"></app-bar>
+    </div>
+    <div *ngIf="type == 'expLine'">
+      <app-exp-line [(properties)]="properties"></app-exp-line>
+    </div>
+    <button id="cancelBtn" (click)="goBack()">CANCEL <span class="fa fa-times"></span></button>
+    <button id="saveBtn" (click)="saveElement()">SAVE <span class="fa fa-save"></span></button>
   </div>
   <div class="element-presentation">
     <div echarts [options]="chartOption"></div>

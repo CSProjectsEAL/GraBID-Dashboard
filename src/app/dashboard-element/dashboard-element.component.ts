@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { EChartOption } from 'echarts';
-import { preserveWhitespacesDefault } from '@angular/compiler';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
+
+import { ElasticSearchService } from '../elastic-search.service';
+import { DashboardService } from '../dashboard.service';
+import { ChartService } from '../chart-types/chart.service';
+
 
 @Component({
   selector: 'app-dashboard-element',
@@ -8,87 +14,55 @@ import { preserveWhitespacesDefault } from '@angular/compiler';
   styleUrls: ['./dashboard-element.component.css']
 })
 export class DashboardElementComponent implements OnInit {
-  data =
-    {
-      legendData: ["TERMINATION", "STARTUP", "RENEWAL", "CHANGE", "OTHER"],
-      seriesData: [{
-        name: "TERMINATION",
-        value: 45,
-        label: {
-          normal: {
-            formatter: ['45%'].join()
-          }
-        }
-      }, {
-        name: "STARTUP",
-        value: 27,
-        label: {
-          normal: {
-            formatter: ['27%'].join()
-          }
-        }
-      }, {
-        name: "RENEWAL",
-        value: 13,
-        label: {
-          normal: {
-            formatter: ['13%'].join()
-          }
-        }
-      }, {
-        name: "CHANGE",
-        value: 10,
-        label: {
-          normal: {
-            formatter: ['10%'].join()
-          }
-        }
-      }, {
-        name: "OTHER",
-        value: 5,
-        label: {
-          normal: {
-            formatter: ['5%'].join()
-          }
-        }
-      }]
-    };
+  element: any = {};
+  type: string;
+  field: string;
+  orderBy: string = "_count";
+  order: string = "desc";
+  chartOption: EChartOption;
+  fields: string[] = [];
+  add: boolean = false;
+  properties: any = null;
+  subscription = this.chartService.chartOptionData.subscribe(data => {
+    if (this.element != null) {
+      this.element.query = data.query;
+      this.chartOption = data.options;
+    }
+  });
 
-    chartOption: EChartOption = {
-    color : ['#06a87b', '#0684a8', '#047556', '#9bdcca', '#e6f6f1', '#50a8c2'],
-    tooltip: {
-      trigger: 'item',
-      formatter: "{a} <br/>{b} : {d}%"
-    },
-    legend: {
-      type: 'scroll',
-      orient: 'vertical',
-      top: 'middle',
-      x: 'center',
-      textStyle: {color: 'color', fontFamily: 'Open Sans', fontWeight: 'bold'},
-      data: this.data.legendData
-    },
-    series: [
-      {
-        name: 'Subscription Type',
-        type: 'pie',
-        radius: '55%',
-        center: ['30%', '50%'],
-        data: this.data.seriesData,
-        emphasis: {
-          itemStyle: {
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
-            shadowBlur: 20,
-            shadowOffsetX: 0
-          }
-        }
-      }
-    ]
-  };
-
-  constructor() { }
+  constructor(private dashboardService: DashboardService, private chartService: ChartService, private router: Router, private route: ActivatedRoute, private location: Location) { }
 
   ngOnInit() {
+    this.add = this.route.snapshot.paramMap.get('id') == 'add';
+    this.element = JSON.parse(JSON.stringify(this.dashboardService.getAndSetCurrentElement(this.route.snapshot.paramMap.get('id'))));
+
+    if (this.element == null)
+      this.router.navigate(['404/1']);
+    else {
+      this.chartService.generateOptions(this.element.query, this.element.type);
+      this.type = this.element.type;
+      this.properties = this.element.properties;
+    }
+  }
+
+  private saveElement() {
+    this.location.back();
+    this.element.properties = this.properties;
+    this.dashboardService.updateElement(this.element, this.add);
+  }
+
+  private goBack() {
+    this.location.back();
+  }
+
+  private changeType(type: string) {
+    this.type = type;
+    this.element.type = type;
+    this.properties = null;
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
 }

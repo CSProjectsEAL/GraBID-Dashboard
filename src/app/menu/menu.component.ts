@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardService } from '../dashboard.service';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 declare var $: any;
 
@@ -13,6 +14,11 @@ export class MenuComponent implements OnInit {
   dashboards: Map<string, any>;
   newDashboardName: string;
   addDashboard: boolean;
+
+  subscription = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => { 
+    this.newDashboardName = null;
+    this.addDashboard = false;
+  });
 
   constructor(private dashboardService: DashboardService, private router: Router) { }
 

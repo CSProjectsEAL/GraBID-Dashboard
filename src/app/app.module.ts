@@ -13,6 +13,9 @@ import { MenuComponent } from './menu/menu.component';
 import { DashboardElementComponent } from './dashboard-element/dashboard-element.component';
 import { AppRoutingModule } from './app-routing.module';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { PieComponent } from './chart-types/pie/pie.component';
+import { BarComponent } from './chart-types/bar/bar.component';
+import { ExpLineComponent } from './chart-types/exp-line/exp-line.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,10 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     SearchComponent,
     MenuComponent,
     DashboardElementComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    PieComponent,
+    BarComponent,
+    ExpLineComponent
   ],
   imports: [
     BrowserModule,

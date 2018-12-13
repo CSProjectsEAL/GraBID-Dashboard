@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { EChartOption } from 'echarts';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { ElasticSearchService } from '../elastic-search.service';
 import { filter } from 'rxjs/operators';
 import { DndListEvent } from '@fjsc/ng2-dnd-list';
+import { Location } from '@angular/common';
+
+import { ElasticSearchService } from '../elastic-search.service';
 import { DashboardService } from '../dashboard.service';
+import { PieChart } from '../chart-types/pie/pieChart';
+import { BarChart } from '../chart-types/bar/barChart';
+import { ExpLineChart } from '../chart-types/exp-line/expLineChart';
 
 declare var $: any;
 
@@ -18,94 +23,56 @@ export class DashboardComponent implements OnInit {
     dashboardId: string;
     editMode: boolean;
     isNameInvalid: boolean;
+    dataLoaded: boolean;
     lastIndex: number;
+    chartOptions = new Map<string, EChartOption>();
 
-    chartOption: EChartOption = {
-        color: ['#06a87b', '#0684a8', '#047556', '#9bdcca', '#e6f6f1', '#50a8c2'],
-        xAxis: {
-            type: 'category',
-            data: ['RENEWAL', 'STARTUP', 'TERMINATION', 'CHANGE'],
-            axisTick: {
-                alignWithLabel: true
-            },
-            axisLine: {
-                lineStyle: { color: 'white' }
-            }
-        },
-        yAxis: {
-            type: 'value',
-            axisLine: {
-                lineStyle: { color: 'white' }
-            }
-        },
-        series: [{
-            data: [14687, '-', '-', '-'],
-            type: 'bar',
-            stack: 'full'
-        },
-        {
-            data: ['-', 13342, '-', '-'],
-            type: 'bar',
-            stack: 'full'
-        },
-        {
-            data: ['-', '-', 4644, '-'],
-            type: 'bar',
-            stack: 'full'
-        },
-        {
-            data: ['-', '-', '-', 2049],
-            type: 'bar',
-            stack: 'full'
-        }]
-    };
-
-    chartOption2: EChartOption = {
-        color: ['blue'],
-        xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            axisLine: {
-                lineStyle: { color: 'white' }
-            }
-        },
-        yAxis: {
-            type: 'value',
-            axisLine: {
-                lineStyle: { color: 'white' }
-            }
-        },
-        series: [{
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
-            type: 'line',
-            areaStyle: {}
-        }]
-    };
-
-    constructor(private route: ActivatedRoute, private elasticSearchService: ElasticSearchService, private dashboardService: DashboardService, private router: Router) { }
-
-    ngOnInit() {
+    subscription = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
         this.dashboardId = this.route.snapshot.paramMap.get('id');
         this.refreshDashboardData(this.dashboardId);
+    });
 
-        this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
-            this.dashboardId = this.route.snapshot.paramMap.get('id');
-            this.refreshDashboardData(this.dashboardId);
-        });
+    constructor(private route: ActivatedRoute, private elasticSearchService: ElasticSearchService, private dashboardService: DashboardService, private router: Router, private location: Location) { }
+
+    ngOnInit() { }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     private refreshDashboardData(id: string) {
         this.dashboardService.getDashboard(id).subscribe(data => {
-            if (data.found == false)
+            if (data.found == false) {
                 this.router.navigate(['/404/2']);
+                this.subscription.unsubscribe();
+            }
             else {
+                this.dataLoaded = true;
                 let dashboard = data._source;
                 this.dashboard = dashboard;
                 this.dashboard.elements.sort(this.compareElements);
 
-                if (this.route.snapshot.paramMap.get('mode') == 'edit')
+                let elements = this.dashboard.elements;
+                for (let i in elements) {
+                    this.elasticSearchService.sendRequest('GET', 'test/_search', elements[i].query).subscribe(data => {
+                        switch (elements[i].type) {
+                            case 'pie': this.chartOptions.set(elements[i].id, PieChart.executeQuery(data));
+                                break;
+                            case 'bar': this.chartOptions.set(elements[i].id, BarChart.executeQuery(data));
+                                break;
+                            case 'expLine': this.chartOptions.set(elements[i].id, ExpLineChart.executeQuery(data));
+                                break;
+                        }
+                    });
+                }
+
+                if (this.route.snapshot.paramMap.get('mode') == 'edit') {
                     this.editMode = true;
+                    if (this.dashboardService.dashboardSnapshot == null) {
+                        this.dashboardService.dashboardSnapshot = JSON.parse(JSON.stringify(this.dashboard));
+                    }
+                }
+                this.dashboardService.currentDashboard = this.dashboard;
             }
         });
     }
@@ -126,6 +93,11 @@ export class DashboardComponent implements OnInit {
     private saveDashboard() {
         this.dashboardService.updateDashboard(this.dashboardId, this.dashboard);
         this.router.navigate(['/dashboard/' + this.dashboardId]);
+    }
+
+    private goBack() {
+        this.dashboardService.cancelEdit(this.dashboardId);
+        this.location.back();
     }
 
     private deleteElement(index: number) {
@@ -151,7 +123,15 @@ export class DashboardComponent implements OnInit {
         this.lastIndex = event.index;
     }
 
-    private navigateToEditMode(){
+    private navigateToEditMode() {
         this.router.navigate(['/dashboard/' + this.dashboardId + '/edit']);
+    }
+
+    private editElement(id: string) {
+        this.router.navigate(['/edit-element/' + id]);
+    }
+
+    private addElement() {
+        this.router.navigate(['/edit-element/add']);
     }
 }
