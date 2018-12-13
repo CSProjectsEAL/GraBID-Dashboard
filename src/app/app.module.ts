@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { AceEditorModule } from 'ng2-ace-editor';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { DndListModule} from '@fjsc/ng2-dnd-list';
 
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -19,14 +21,16 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     SearchComponent,
     MenuComponent,
     DashboardElementComponent,
-    PageNotFoundComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
     NgxEchartsModule,
     AceEditorModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    DndListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

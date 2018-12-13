@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ElasticSearchService } from '../elastic-search.service';
+import { DashboardService } from '../dashboard.service';
+import { Router } from '@angular/router';
 
 declare var $: any;
 
@@ -9,27 +10,22 @@ declare var $: any;
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-  dashboardNames: any[] = [];
+  dashboards: Map<string, any>;
+  newDashboardName: string;
+  addDashboard: boolean;
 
-  constructor(private elasticSearchService: ElasticSearchService) { }
+  constructor(private dashboardService: DashboardService, private router: Router) { }
 
   ngOnInit() {
-    $(document).ready(function(){
-      $('#addTxt').click(function(){
-        $('.add-dashboard-form .hide-element').show();
-        $('#addTxt').hide();
-      });
-    });
-
-    
-    this.elasticSearchService.sendRequest('GET', 'dashboards/_search').subscribe(data => {
-      for (let hit of data.hits.hits){
-        this.dashboardNames.push({name: hit._source.name, id: hit._id});
-      };
-    });
+    this.dashboardService.getAllDashboards().subscribe(data => this.dashboards = data);
   }
 
-  redirectToDashboard(name: string){
-    console.log(name);
+  private addNewDashboard(){
+    let dashboard = {
+      name: this.newDashboardName, timestamp: Date.now().toString(), elements: []
+    };
+    let id = this.dashboardService.addDashboard(dashboard);
+
+    this.router.navigate(['/dashboard/' + id + '/edit']);
   }
 }

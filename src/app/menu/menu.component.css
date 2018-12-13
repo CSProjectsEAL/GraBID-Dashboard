@@ -98,13 +98,14 @@
     display: flex;
     flex-wrap: nowrap;
     border-top: 1px solid #81889F;
-    padding-top: 10px;
+    padding-top: 5px;
+    margin-bottom: 3px;
 }
 
 .add-dashboard-form > div{
     width: 100%;
     text-align: center;
-    padding-bottom: 5px;
+    padding-bottom: 3px;
     font-weight: bolder;
     color: #2aa198;
 }

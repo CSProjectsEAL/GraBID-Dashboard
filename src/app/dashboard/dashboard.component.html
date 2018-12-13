@@ -1,27 +1,31 @@
+<div *ngIf="!editMode" class="dashboardPresentation">
+    <div><span id="dashboardName">{{dashboard.name}}</span>
+    <button id="editBtn" (click)="navigateToEditMode()"><span class="fa fa-pencil-alt"></span></button></div>
+</div>
 <div *ngIf="editMode" class="edit">
-    <input type="text" value="{{dashboard.name}}">
-    <button id="saveBtn">SAVE <span class="fa fa-save"></span></button>
+    <input [class.invalid]="isNameInvalid" [(ngModel)]="dashboard.name">
+    <button id="saveBtn" (click)="saveDashboard()">SAVE <span class="fa fa-save"></span></button>
     <button id="deleteBtn" (click)="deleteDashboard()">DELETE <span class="fa fa-trash-alt"></span></button>
 </div>
-<ul id="dashboard" class="wrapper">
-    <li *ngFor="let element of elements" class="dashboard-element {{element.size}}">
+<ul [(dndList)]="dashboard.elements" (dndDrop)="onDrop($event)" id="dashboard" class="wrapper">
+    <li *ngFor="let element of dashboard.elements; let i=index;" [dndDraggable]="element" dndEffectAllowed="move" (dndMoved)="moved(i, dashboard.elements)" [dndDisable]="!editMode" class="dashboard-element {{element.size}}">
         <div echarts [options]="chartOption2"></div>
         <div *ngIf="editMode" class="editMode">
             <button class="editBtn"><i class="fa fa-pencil-alt"></i></button>
             <button class="rulerBtn">
                 <div class="sizeMenu">
                     <ul>
-                        <li><label><input type="radio" name="size" value="small">Small</label></li>
-                        <li><label><input type="radio" name="size" value="medium">Medium</label></li>
-                        <li><label><input type="radio" name="size" value="large">Large</label></li>
+                        <li><label><input type="radio"  (click)="element.size = 'small'" name="size{{i}}" [checked]="element.size === 'small'">Small</label></li>
+                        <li><label><input type="radio" (click)="element.size = 'medium'" name="size{{i}}" [checked]="element.size === 'medium'">Medium</label></li>
+                        <li><label><input type="radio" (click)="element.size = 'large'" name="size{{i}}" [checked]="element.size === 'large'">Large</label></li>
                     </ul>
                 </div>
                 <i class="fa fa-ruler-combined"></i>
             </button>
-            <button class="trashBtn"><i class="fa fa-trash-alt"></i></button>
+            <button class="trashBtn" (click)="deleteElement(element.order)"><i class="fa fa-trash-alt"></i></button>
         </div>
     </li>
-    <!-- <li class="dashboard-element small">
+    <li *ngIf="editMode" class="dashboard-element small">
     <img id="plusImg" src="../../assets/plus.png" />
-  </li> -->
+    </li>
 </ul>

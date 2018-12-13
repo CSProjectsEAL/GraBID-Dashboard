@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { EChartOption } from 'echarts';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { Location } from '@angular/common';
 import { ElasticSearchService } from '../elastic-search.service';
 import { filter } from 'rxjs/operators';
+import { DndListEvent } from '@fjsc/ng2-dnd-list';
+import { DashboardService } from '../dashboard.service';
 
 declare var $: any;
 
@@ -14,8 +15,10 @@ declare var $: any;
 })
 export class DashboardComponent implements OnInit {
     dashboard: any = {};
+    dashboardId: string;
     editMode: boolean;
-    elements: any[] = [];
+    isNameInvalid: boolean;
+    lastIndex: number;
 
     chartOption: EChartOption = {
         color: ['#06a87b', '#0684a8', '#047556', '#9bdcca', '#e6f6f1', '#50a8c2'],
@@ -80,47 +83,31 @@ export class DashboardComponent implements OnInit {
         }]
     };
 
-    constructor(private route: ActivatedRoute, private location: Location, private elasticSearchService: ElasticSearchService, private router: Router) { }
+    constructor(private route: ActivatedRoute, private elasticSearchService: ElasticSearchService, private dashboardService: DashboardService, private router: Router) { }
 
     ngOnInit() {
-        this.refreshDashboardData(this.route.snapshot.paramMap.get('id'));
+        this.dashboardId = this.route.snapshot.paramMap.get('id');
+        this.refreshDashboardData(this.dashboardId);
 
         this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
-            this.refreshDashboardData(this.route.snapshot.paramMap.get('id'));
+            this.dashboardId = this.route.snapshot.paramMap.get('id');
+            this.refreshDashboardData(this.dashboardId);
         });
-
-        console.log(this.route.snapshot.paramMap.get('id'));
-        console.log(this.route.snapshot.paramMap.get('mode'));
     }
 
     private refreshDashboardData(id: string) {
-        
-        this.elasticSearchService.sendRequest('GET', 'dashboards/dashboard/' + id).subscribe(data => {
-            if(!data.found)
+        this.dashboardService.getDashboard(id).subscribe(data => {
+            if (data.found == false)
                 this.router.navigate(['/404/2']);
+            else {
+                let dashboard = data._source;
+                this.dashboard = dashboard;
+                this.dashboard.elements.sort(this.compareElements);
 
-            this.dashboard = {
-                name: data._source.name, timeStamp: data._source.timeStamp, id: data._id, elements: this.elements
-            };
-            this.elements = data._source.elements;
-            this.elements.sort(this.compareElements);
+                if (this.route.snapshot.paramMap.get('mode') == 'edit')
+                    this.editMode = true;
+            }
         });
-
-        if (this.route.snapshot.paramMap.get('mode') == 'edit')
-            this.editMode = true;
-            
-        if (this.editMode) {
-            $(document).ready(function () {
-                $('#dashboard').sortable();
-                $('#dashboard').disableSelection();
-                $('.rulerBtn').click(function () {
-                    var selValue = $(this).find('input[name=size]:checked').val();
-
-                    $(this).parent().parent().removeClass('small medium large');
-                    $(this).parent().parent().addClass('dashboard-element ' + selValue);
-                });
-            });
-        }
     }
 
     private compareElements(a: any, b: any): number {
@@ -131,8 +118,40 @@ export class DashboardComponent implements OnInit {
         return 0;
     }
 
-    private deleteDashboard(){
-        this.elasticSearchService.sendRequest('DELETE', 'dashboards/dashboard/' + this.dashboard.id).subscribe();
+    private deleteDashboard() {
+        this.dashboardService.deleteDashboard(this.dashboardId);
+        this.router.navigate(['/404/2']);
     }
 
+    private saveDashboard() {
+        this.dashboardService.updateDashboard(this.dashboardId, this.dashboard);
+        this.router.navigate(['/dashboard/' + this.dashboardId]);
+    }
+
+    private deleteElement(index: number) {
+        this.dashboard.elements.splice(index, 1);
+        let order: number = 0;
+
+        for (let element of this.dashboard.elements) {
+            element.order = order;
+            order++;
+        }
+    }
+
+    private moved(index: number, list: any[]) {
+        let order = 0;
+        list.splice(index, 1);
+        for (let li of list) {
+            li.order = order;
+            order++;
+        }
+    }
+
+    private onDrop(event: DndListEvent) {
+        this.lastIndex = event.index;
+    }
+
+    private navigateToEditMode(){
+        this.router.navigate(['/dashboard/' + this.dashboardId + '/edit']);
+    }
 }
