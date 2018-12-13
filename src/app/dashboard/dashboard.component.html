@@ -1,7 +1,7 @@
-<ul class="wrapper">
-  <li class="dashboard-element small">
+<ul id="dashboard" class="wrapper">
+  <li *ngFor="let element of elements" class="dashboard-element {{element.size}}">
     <div echarts [options]="chartOption2"></div>
-    <div class="editMode">
+    <div *ngIf="editMode" class="editMode">
       <button class="editBtn"><i class="fa fa-pencil-alt"></i></button>
       <button class="rulerBtn">
           <div class="sizeMenu">
@@ -16,74 +16,7 @@
       <button class="trashBtn"><i class="fa fa-trash-alt"></i></button>
     </div>
   </li>
-  <li class="dashboard-element small">
-    <div echarts [options]="chartOption"></div>
-    <div class="editMode">
-        <button class="editBtn"><i class="fa fa-pencil-alt"></i></button>
-        <button class="rulerBtn">
-            <div class="sizeMenu">
-                <ul>
-                    <li><label><input type="radio" name="size" value="small">Small</label></li>
-                    <li><label><input type="radio" name="size" value="medium">Medium</label></li>
-                    <li><label><input type="radio" name="size" value="large">Large</label></li>
-                </ul>
-              </div>
-          <i class="fa fa-ruler-combined"></i>
-        </button>
-        <button class="trashBtn"><i class="fa fa-trash-alt"></i></button>
-      </div>
-  </li>
-  <li class="dashboard-element small">
-    <div echarts [options]="chartOption"></div>
-    <div class="editMode">
-        <button class="editBtn"><i class="fa fa-pencil-alt"></i></button>
-        <button class="rulerBtn">
-            <div class="sizeMenu">
-                <ul>
-                    <li><label><input type="radio" name="size" value="small">Small</label></li>
-                    <li><label><input type="radio" name="size" value="medium">Medium</label></li>
-                    <li><label><input type="radio" name="size" value="large">Large</label></li>
-                </ul>
-              </div>
-          <i class="fa fa-ruler-combined"></i>
-        </button>
-        <button class="trashBtn"><i class="fa fa-trash-alt"></i></button>
-      </div>
-  </li>
-  <li class="dashboard-element large">
-    <div echarts [options]="chartOption"></div>
-    <div class="editMode">
-        <button class="editBtn"><i class="fa fa-pencil-alt"></i></button>
-        <button class="rulerBtn">
-            <div class="sizeMenu">
-                <ul>
-                    <li><label><input type="radio" name="size" value="small">Small</label></li>
-                    <li><label><input type="radio" name="size" value="medium">Medium</label></li>
-                    <li><label><input type="radio" name="size" value="large">Large</label></li>
-                </ul>
-              </div>
-          <i class="fa fa-ruler-combined"></i>
-        </button>
-        <button class="trashBtn"><i class="fa fa-trash-alt"></i></button>
-      </div>
-  </li>
-  <li class="dashboard-element medium">
-      <div class="editMode">
-          <button class="editBtn"><i class="fa fa-pencil-alt"></i></button>
-          <button class="rulerBtn">
-              <div class="sizeMenu">
-                  <ul>
-                      <li><label><input type="radio" name="size" value="small">Small</label></li>
-                      <li><label><input type="radio" name="size" value="medium">Medium</label></li>
-                      <li><label><input type="radio" name="size" value="large">Large</label></li>
-                  </ul>
-                </div>
-            <i class="fa fa-ruler-combined"></i>
-          </button>
-          <button class="trashBtn"><i class="fa fa-trash-alt"></i></button>
-        </div>
-  </li>
-  <li class="dashboard-element small">
+    <!-- <li class="dashboard-element small">
     <img id="plusImg" src="../../assets/plus.png" />
-  </li>
+  </li> -->
 </ul>

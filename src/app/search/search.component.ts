@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ElasticSearchService } from '../elastic-search.service';
 import { TemplateQueriesService } from '../template-queries.service';
-import { stringify } from 'querystring';
 
 declare var $: any;
 

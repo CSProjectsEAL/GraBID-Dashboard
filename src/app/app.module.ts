@@ -9,7 +9,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { SearchComponent } from './search/search.component';
 import { MenuComponent } from './menu/menu.component';
 import { DashboardElementComponent } from './dashboard-element/dashboard-element.component';
-
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -23,7 +23,8 @@ import { DashboardElementComponent } from './dashboard-element/dashboard-element
     BrowserModule,
     NgxEchartsModule,
     AceEditorModule,
-    HttpClientModule
+    HttpClientModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

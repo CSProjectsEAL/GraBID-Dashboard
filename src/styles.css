@@ -13,3 +13,7 @@ font-family: 'Open Sans', sans-serif;
 .request-editor .ace_scroller{
     top: 40px !important;
 }
+
+.hide-element{
+    display: none;
+}
