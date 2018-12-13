@@ -1,16 +1,13 @@
 <div class="wrapper">
-        <div class="editor" ace-editor [(text)]="request" [mode]="'json'" [theme]="'solarized_dark'" [options]="options">
+        <div class="editor request-editor" ace-editor [(text)]="request" [mode]="'json'" [theme]="'solarized_dark'" [options]="options">
             <div id="preset">
-                    <select>
+                    <select (change)="presetClick($event.target.value)">
                         <option value="" disabled selected>PRESET</option>
-                        <option value="1">Select by id</option>
-                        <option value="2">Select x</option>
-                        <option value="3">Select y</option>
-                        <option value="4">Select all from</option>
+                        <option *ngFor="let query of queries" [value]='query.key'>{{query.displayName}}</option>
                     </select>
                 </div>
-                <button id="sendBtn">SEND <span class="fa fa-paper-plane"></span></button>
+                <button id="sendBtn" (click)="sendRequest()">SEND <span class="fa fa-paper-plane"></span></button>
         </div>
-    <div class="editor" ace-editor [(text)]="response" [mode]="'json'" [theme]="'solarized_dark'" [options]="options"></div>
+    <div class="editor" ace-editor [(text)]="response" [mode]="'json'" [theme]="'solarized_dark'" [options]="options" [readOnly]="true!"></div>
     
 </div>
