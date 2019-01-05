@@ -12,7 +12,6 @@ export class BarComponent implements OnInit {
 
   @Input('properties') set setValue(value){
     this.properties = value;
-    console.log(value);
   }
   @Output('propertiesChange') emitter: EventEmitter<any> = new EventEmitter<any>();
 
@@ -31,7 +30,6 @@ export class BarComponent implements OnInit {
 
     if(this.properties != null && this.properties != undefined)
     {
-      console.log('GOT HERE');
       this.field = this.properties.field;
       this.orderBy = this.properties.orderBy;
       this.order = this.properties.order;

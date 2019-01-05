@@ -1,5 +1,6 @@
 import { EChartOption } from 'echarts';
 import * as ecStat from 'echarts-stat';
+import { Colours } from '../../colors';
 
 export abstract class ExpLineChart {
   private static data = [];
@@ -36,6 +37,7 @@ export abstract class ExpLineChart {
     });
 
     return {
+      color: Colours.GenerateColors(1),
       tooltip: {
         trigger: 'axis',
         axisPointer: {
