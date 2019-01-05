@@ -11,7 +11,6 @@ const esb = require('elastic-builder');
 export class ExpLineComponent implements OnInit {
   @Input('properties') set setValue(value){
     this.properties = value;
-    console.log(value);
   }
   @Output('propertiesChange') emitter: EventEmitter<any> = new EventEmitter<any>();
 

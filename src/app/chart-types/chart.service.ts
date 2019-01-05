@@ -13,16 +13,15 @@ import { EChartOption } from 'echarts';
 })
 export class ChartService {
 
-  chartOptionData: Observable<{query: string, options: EChartOption}>;
-  private chartOptionDataUpdater = new Subject<{query: string, options: EChartOption}>();
+  chartOptionData: Observable<{ query: string, options: EChartOption }>;
+  private chartOptionDataUpdater = new Subject<{ query: string, options: EChartOption }>();
 
-  constructor(private elasticSearchService: ElasticSearchService) { 
+  constructor(private elasticSearchService: ElasticSearchService) {
     this.chartOptionData = this.chartOptionDataUpdater.asObservable();
   }
 
 
   generateOptions(query: string, type: string) {
-    //console.log(query + ' ' + type);
     return this.elasticSearchService.sendRequest('GET', 'test/_search', query).subscribe(data => {
       let options = {};
 
@@ -54,6 +53,23 @@ export class ChartService {
       }
 
       return fields;
+    }));
+  }
+
+  getChartOptions(query: string, type: string): Observable<EChartOption> {
+    return this.elasticSearchService.sendRequest('GET', 'test/_search', query).pipe(map(data => {
+      let option = {};
+
+      switch (type) {
+        case 'pie': option = PieChart.executeQuery(data);
+          break;
+        case 'bar': option = BarChart.executeQuery(data);
+          break;
+        case 'expLine': option = ExpLineChart.executeQuery(data);
+          break;
+      }
+
+      return option;
     }));
   }
 }

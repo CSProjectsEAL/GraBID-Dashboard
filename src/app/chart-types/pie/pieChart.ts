@@ -1,4 +1,5 @@
 import { EChartOption } from 'echarts';
+import { Colours } from '../../colors';
 
 export abstract class PieChart {
   private static data =
@@ -38,7 +39,7 @@ export abstract class PieChart {
 
   private static getChartOption(name: string): EChartOption {
     return {
-      color: ['#06a87b', '#0684a8', '#047556', '#9bdcca', '#e6f6f1', '#50a8c2'],
+      color: Colours.GenerateColors(this.data.legendData.length),
       tooltip: {
         trigger: 'item',
         formatter: "Count - {c}"

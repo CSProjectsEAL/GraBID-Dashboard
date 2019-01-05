@@ -5,13 +5,12 @@ import { filter } from 'rxjs/operators';
 import { DndListEvent } from '@fjsc/ng2-dnd-list';
 import { Location } from '@angular/common';
 
-import { ElasticSearchService } from '../elastic-search.service';
 import { DashboardService } from '../dashboard.service';
 import { PieChart } from '../chart-types/pie/pieChart';
 import { BarChart } from '../chart-types/bar/barChart';
 import { ExpLineChart } from '../chart-types/exp-line/expLineChart';
+import { ChartService } from '../chart-types/chart.service';
 
-declare var $: any;
 
 @Component({
     selector: 'app-dashboard',
@@ -32,7 +31,7 @@ export class DashboardComponent implements OnInit {
         this.refreshDashboardData(this.dashboardId);
     });
 
-    constructor(private route: ActivatedRoute, private elasticSearchService: ElasticSearchService, private dashboardService: DashboardService, private router: Router, private location: Location) { }
+    constructor(private route: ActivatedRoute, private dashboardService: DashboardService, private chartService: ChartService, private router: Router, private location: Location) { }
 
     ngOnInit() { }
 
@@ -44,7 +43,6 @@ export class DashboardComponent implements OnInit {
         this.dashboardService.getDashboard(id).subscribe(data => {
             if (data.found == false) {
                 this.router.navigate(['/404/2']);
-                this.subscription.unsubscribe();
             }
             else {
                 this.dataLoaded = true;
@@ -54,15 +52,8 @@ export class DashboardComponent implements OnInit {
 
                 let elements = this.dashboard.elements;
                 for (let i in elements) {
-                    this.elasticSearchService.sendRequest('GET', 'test/_search', elements[i].query).subscribe(data => {
-                        switch (elements[i].type) {
-                            case 'pie': this.chartOptions.set(elements[i].id, PieChart.executeQuery(data));
-                                break;
-                            case 'bar': this.chartOptions.set(elements[i].id, BarChart.executeQuery(data));
-                                break;
-                            case 'expLine': this.chartOptions.set(elements[i].id, ExpLineChart.executeQuery(data));
-                                break;
-                        }
+                    this.chartService.getChartOptions(elements[i].query, elements[i].type).subscribe(option => {
+                        this.chartOptions.set(elements[i].id, option);
                     });
                 }
 

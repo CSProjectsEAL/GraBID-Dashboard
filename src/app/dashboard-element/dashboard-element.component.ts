@@ -3,7 +3,6 @@ import { EChartOption } from 'echarts';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { ElasticSearchService } from '../elastic-search.service';
 import { DashboardService } from '../dashboard.service';
 import { ChartService } from '../chart-types/chart.service';
 

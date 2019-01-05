@@ -1,4 +1,5 @@
 import { EChartOption } from 'echarts';
+import { Colours } from '../../colors';
 
 export abstract class BarChart {
   private static data =
@@ -56,7 +57,7 @@ export abstract class BarChart {
 
   private static getChartOption(): EChartOption {
     return {
-      color: ['#06a87b', '#0684a8', '#047556', '#9bdcca', '#e6f6f1', '#50a8c2'],
+      color: Colours.GenerateColors(this.data.xAxisData.length),
       tooltip: {
         trigger: 'axis',
         axisPointer: {

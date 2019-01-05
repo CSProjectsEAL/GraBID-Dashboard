@@ -3,8 +3,6 @@ import { DashboardService } from '../dashboard.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
-declare var $: any;
-
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
